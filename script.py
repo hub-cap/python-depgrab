@@ -23,7 +23,7 @@ def getdep2(pkg):
   non_installed = []
   for dep in deplines:
     output = os.popen("dpkg -l %s" % dep).readlines()
-    if len(output) == 0 or output[-1].startswith("un"):
+    if len(output) == 0 or not output[-1].startswith("ii"):
       # This is not installed locally, lets see if we have already added it
       non_installed.append(dep)
   return non_installed
@@ -86,6 +86,7 @@ def uniq(seq):
 execution = sys.argv[1]
 package = sys.argv[2]
 output_folder = sys.argv[3]
+debrepo = sys.argv[4]
 
 if execution == 'getdep':
   uninstalled_deps = uniq(recursive_getdeps(package))
@@ -95,8 +96,9 @@ if execution == 'getdep':
   for file in files:
     os.popen("cp %s %s" % (file, output_folder))
   pass
-elif execution == 'cleardep':
-  pass
+elif execution == 'installdep':
+  # Assume they are all in a folder
+  print os.popen("reprepro -Vb %s includedeb lucid %s/*" % (debrepo, output_folder)).readlines()
 else:
   print "Could not find a execution, exiting"
   exit(1)
