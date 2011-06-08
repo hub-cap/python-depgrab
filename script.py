@@ -93,6 +93,7 @@ if execution == 'getdep':
   print "got the deps, now finding the files for %s files" % len(uninstalled_deps)
   files = getfiles(uninstalled_deps)
   print "got the files, now copying them"
+  os.popen("mkdir -p %s" % output_folder)
   for file in files:
     os.popen("cp %s %s" % (file, output_folder))
   pass
